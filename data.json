@@ -1,0 +1,31 @@
+[{
+    "frutto" : "mele", 
+    "num" : 2
+},
+{   "frutto" : "pere",
+    "num" : 4
+},
+{   "frutto" : "banane",
+    "num" : 7
+},
+{   "frutto" : "kiwi", 
+    "num" : 10
+},
+{   "frutto" : "avocado",
+    "num" : 1
+},
+{   "frutto" : "fragole",
+    "num" : 8
+},
+{   "frutto" : "mandarini",
+    "num" : 3
+},
+{   "frutto" : "susine",
+    "num" : 5
+},
+{   "frutto" : "more",
+    "num" : 2
+},
+{   "frutto" : "pesche",
+    "num" : 6
+}]

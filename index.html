@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: none;
+}
+
+.toolTip {
+    position: absolute;
+    display: none;
+    width: auto;
+    height: auto;
+    background: none repeat scroll 0 0 white;
+    border: 0 none;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: -3px 3px 15px #888888;
+    color: black;
+    font: 12px sans-serif;
+    padding: 5px;
+    text-align: center;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
+<script>
+var div = d3.select("body").append("div").attr("class", "toolTip");
+    
+
+
+
+var width = 960,
+    height = 500,
+    radius = Math.min(width, height) / 2;
+
+var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+    	.append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+
+var color = d3.scale.ordinal()
+    .range(["#148DFE", "#389EFE", "#50AAFF", "#65B4FF", "#79BEFF","#8CC6FE","#A0D0FE","#B1D8FD","#C5E3FE","#DBEEFF"]);
+
+    
+d3.json("data.json", function(data){
+   
+function update(dataset){
+
+	d3.select("svg").remove(); 
+	var svg=d3.select("body").append("svg")
+					.attr("width", width)
+      .attr("height", height)
+    	.append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+  var arc = d3.svg.arc()
+      .outerRadius(radius - 10)
+      .innerRadius(0);
+
+  var pie = d3.layout.pie()
+      .sort(null)
+
+      .value(function(d) { return d.num; });
+
+  
+//console.log(dataset)
+
+   var g = svg.selectAll(".arc")
+        .data(pie(dataset))
+      .enter().append("g")
+        .attr("class", "arc");
+
+    g.append("path")
+    .style("fill", function(d) { return color(d.data.frutto); })
+    .transition().delay(function(d,i) {
+    return i * 100; }).duration(100)
+    .attrTween('d', function(d) {
+      var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+      return function(t) {
+        d.endAngle = i(t); 
+        return arc(d)
+        }
+      }); 
+    
+		svg.selectAll("path").data(pie(dataset)).exit().remove()
+    d3.selectAll("path").on("mousemove", function(d) {
+        div.style("left", d3.event.pageX+10+"px");
+        div.style("top", d3.event.pageY-25+"px");
+        div.style("display", "inline-block");
+      div.html((d.data.frutto)+"<br>"+(d.data.num) );
+  });
+
+  d3.selectAll("path").on("mouseout", function(d){
+   div.style("display", "none");
+   });
+  d3.selectAll("path").on("click",function(d,i){
+  
+
+    // console.log(d);
+     console.log(i);
+    
+     //console.log(dataset[i]);
+     //console.log(dataset[i+1])
+     var dataset2= dataset;
+     var j=i+1;
+     if (j==10){
+     j=0;
+     }
+     var appoggio= dataset2[j];
+          
+     dataset2[j]=dataset2[i];
+     dataset2[i]=appoggio;
+     //console.log(dataset2);
+     update(dataset2);
+     
+     
+      
+  });
+
+
+  //d3.select("body").transition().style("background-color", "#d3d3d3");
+  function type(d) {
+    d.num = +d.num;
+    return d;
+  }
+	
+  };
+     console.log(data);
+    update(data);
+});
+  
+
+
+</script>
